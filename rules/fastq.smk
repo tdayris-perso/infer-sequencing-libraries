@@ -1,10 +1,6 @@
 rule read_length:
     input:
-        expand(
-            "raw_data/{sample}.fastq.gz",
-            stream = ["1", "2"],
-            allow_missing = True
-        )
+        unpack(get_samples_w)
     output:
         temp("read_length/{sample}.txt")
     message:
@@ -19,12 +15,12 @@ rule read_length:
     log:
         "logs/read/length/{sample}.log"
     script:
-        "scripts/read_length.py"
+        "../scripts/read_length.py"
 
 
 rule read_quality:
     input:
-        "raw_data/{sample}.fastq.gz"
+        unpack(get_samples_w)
     output:
         temp("read_quality/{sample}.txt")
     message:
@@ -39,12 +35,12 @@ rule read_quality:
     log:
         "logs/read/quality/{sample}.log"
     script:
-        "scripts/read_quality.py"
+        "../scripts/read_quality.py"
 
 
 rule read_number:
     input:
-        "raw_data/{sample}.fastq.gz"
+        unpack(get_samples_w)
     output:
         temp("read_number/{sample}.txt")
     message:
@@ -52,21 +48,22 @@ rule read_number:
     group:
         "Manual_data_gathering"
     threads:
-        1
+        2
     resources:
         time_min = 15,
         mem_mb = 128
     log:
         "logs/read/number/{sample}.log"
     shell:
-        " awk 'END {{ print NR/4 }}' {input} > {output} 2> {log}"
+        "(gunzip -c {input[0]} | "
+        " awk 'END {{ print NR/4 }}') > {output} 2> {log}"
 
 
 rule paste_read_information:
     input:
         expand(
             "read_{data}/{sample}.txt",
-            data=["length", "number", "quality"]
+            data=["length", "number", "quality"],
             allow_missing=True
         )
     output:
@@ -104,4 +101,5 @@ rule cat_read_information:
     log:
         "logs/read/complete.log"
     shell:
-        "cat {input} > {output} 2> {log}"
+        """(echo -e "Sample_id\tMeanLength\tStdLength\tReadNumber\tSample_id\tMeanQuality\tStdQuality" &&  """
+        """cat {input}) > {output} 2> {log}"""

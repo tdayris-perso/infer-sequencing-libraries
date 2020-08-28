@@ -2,8 +2,8 @@ rule subset_reads:
     input:
         unpack(get_seqt_pairs_w)
     output:
-        f1 = "seqt/{sample}.1.fastq.gz",
-        f2 = "seqt/{sample}.2.fastq.gz"
+        f1 = temp("seqt/{sample}.1.fastq.gz"),
+        f2 = temp("seqt/{sample}.2.fastq.gz")
     message:
         "Subsampling {wildcards.sample}"
     threads:

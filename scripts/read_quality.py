@@ -9,25 +9,27 @@ Compute statistics over read qualitites
 import gzip
 import numpy
 
-qualities = numpy.array
-phreds = numpy.array
+qualities = []
 
-phred33 = "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopq"
 
-with gzip.open(snakemake.input[0], "r") as fastq:
-    line_iter = iter(fastq)
-    line = next(line_iter, None)
-    while line is not None:
-        if line.startswith("@"):
+for fastq_path in snakemake.input:
+    with gzip.open(fastq_path, "rb") as fastq:
+        print(fastq_path)
+        line_iter = iter(fastq)
+        line = next(line_iter, None)
+        while line is not None:
+            if line.startswith(b"@"):
+                line = next(line_iter, None)
+                line = next(line_iter, None)
+                line = next(line_iter, None)
+            qualities.append(sum(ord(i) - 33 for i in str(line[:-1])) / len(str(line[:-1])))
             line = next(line_iter, None)
             line = next(line_iter, None)
-        phred = (33 if all(i in phred33 for i in line[:-1]) else 64)
-        qualities.append(sum(ord(i) - phred for i in line[:-1]))
-        phreds.append(phred)
 
+sample = snakemake.wildcards["sample"]
+qualities = numpy.array(qualities)
 mean = qualities.mean()
 std = qualities.std()
-phred = phreads.mean()
 
 with open(snakemake.output[0], 'w') as outfile:
-    outfile.write(f"{mean}\t{std}\t{phred}\n")
+    outfile.write(f"{sample}\t{mean}\t{std}\n")
