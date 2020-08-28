@@ -1,4 +1,4 @@
-name: B20032_KABE_01
+name: infer-sequencing-libraries
 channels:
   - bioconda
   - conda-forge

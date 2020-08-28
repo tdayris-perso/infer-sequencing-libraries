@@ -17,8 +17,9 @@ with gzip.open(snakemake.input[0], 'r') as fastq:
         if not line.startswith(("@", "+"))
     )
 
+sample = snakemake.wildcards["sample"]
 mean = length.mean()
 std = length.std()
 
 with open(snakemake.output[0], "w") as outlength:
-    outlength.wirte(f"{mean}\t{std}\n")
+    outlength.wirte(f"{sample}\t{mean}\t{std}\n")

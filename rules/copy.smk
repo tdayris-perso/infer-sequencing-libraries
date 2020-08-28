@@ -14,7 +14,7 @@ rule copy_extra:
         files = r"[^/]+"
     threads: 1
     params:
-        extra = config["params"].get("copy_extra", ""),
+        extra = "--verbose",
         cold_storage = config.get("cold_storage", ["NONE"])
     wrapper:
         f"{git}/bio/cp"

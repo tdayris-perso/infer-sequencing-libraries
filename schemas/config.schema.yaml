@@ -1,0 +1,19 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+description: Configurations
+
+proprerties:
+  gtf:
+    type: string
+    description: Path to genome annotation in GTF format
+  fasta:
+    type: string
+    description: Path to genome sequence in FASTA format
+  bed:
+    type: string
+    description: Path to genome annotation in BED12 format (see RSeQC)
+
+required:
+  - gtf
+  - fasta
+  - bed

@@ -1,0 +1,3 @@
+bed: tests/genome/chr21.bed
+fasta: tests/genome/genome.chr21.fa
+gtf: tests/genome/annotation.chr21.gtf
