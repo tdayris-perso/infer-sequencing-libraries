@@ -15,3 +15,5 @@ read_quality/
 seqt/
 design.tsv
 config.yaml
+*.html
+example.png
