@@ -4,7 +4,7 @@ rule star_index:
         gtf = get_gtf_path(),
         index = get_index_path()
     output:
-        directory("star/index/idx")
+        temp(directory("star/index/idx"))
     message:
         "Indexing idx with STAR"
     threads:
@@ -69,7 +69,7 @@ rule star_rename:
     input:
         "star/bam/{sample}/Aligned.sortedByCoord.out.bam"
     output:
-        "star/bam/{sample}.bam"
+        temp("star/bam/{sample}.bam")
     message:
         "Renaming {wildcards.sample} for further analyses"
     threads:
@@ -95,7 +95,7 @@ rule samtools_bam_index:
     input:
         "star/bam/{sample}.bam"
     output:
-        "star/bam/{sample}.bam.bai"
+        temp("star/bam/{sample}.bam.bai")
     message:
         "Indexing {wildcards.sample} bam file"
     threads:

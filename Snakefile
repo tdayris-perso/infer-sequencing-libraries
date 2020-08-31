@@ -16,6 +16,6 @@ include: "rules/star.smk"
 
 rule all:
     input:
-        **get_targets(get_manuals=True, get_bam=True)
+        **get_targets(get_manuals=True, get_stats=True)
     message:
         "Finishing pipeline"

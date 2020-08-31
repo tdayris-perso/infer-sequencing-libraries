@@ -134,7 +134,8 @@ def get_gtf_path() -> str:
 
 
 def get_targets(get_manuals: bool = False,
-                get_bam: bool = False) -> Dict[str, str]:
+                get_bam: bool = False,
+                get_stats: bool = False) -> Dict[str, str]:
     """
     Return all needed output files
     """
@@ -149,5 +150,8 @@ def get_targets(get_manuals: bool = False,
             "star/bam/{sample}.bam",
             sample = design.Sample_id
         )
+
+    if get_stats is True:
+        targets["stats"] = "stats/global.tsv"
 
     return targets

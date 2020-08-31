@@ -63,7 +63,7 @@ rule paste_read_information:
     input:
         expand(
             "read_{data}/{sample}.txt",
-            data=["length", "number", "quality"],
+            data=["length", "number"],
             allow_missing=True
         )
     output:
@@ -101,5 +101,51 @@ rule cat_read_information:
     log:
         "logs/read/complete.log"
     shell:
-        """(echo -e "Sample_id\tMeanLength\tStdLength\tReadNumber\tSample_id\tMeanQuality\tStdQuality" &&  """
-        """cat {input}) > {output} 2> {log}"""
+        '(echo -e "Sample_id\tMeanLength\tStdLength\tReadNumber" &&  '
+        'cat {input}) > {output} 2> {log}'
+
+
+rule cat_read_qualities:
+    input:
+        expand(
+            "read_quality/{sample}.txt",
+            sample=design.Sample_id
+        )
+    output:
+        "stats/manual/qualities.tsv"
+    message:
+        "Gathering qualities for all samples"
+    threads:
+        1
+    resources:
+        time_min = lambda wildcards, attempt: attempt * 30,
+        mem_mb = lambda wildcards, attempt: 256
+    log:
+        "logs/read/qualities_complete.log"
+    shell:
+        '(echo -e "Sample_id\tMeanQuality\tStdQuality" &&  '
+        'cat {input}) > {output} 2> {log}'
+
+
+rule merge_all_metrics:
+    input:
+        "design.tsv",
+        "stats/manual/complete.txt",
+        "stats/manual/qualities.tsv",
+        "stats/collectinsertsizemetrics/complete.isize.tsv",
+        "stats/collectalignmentsummarymetrics/complete.tsv"
+    output:
+        "stats/global.tsv"
+    message:
+        "Merging metrics together"
+    threads:
+        1
+    resources:
+        time_min = 15,
+        mem_mb = 1024
+    log:
+        "logs/stats/merge.log"
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/merge_on_sample_id.py"

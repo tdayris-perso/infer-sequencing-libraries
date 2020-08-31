@@ -54,3 +54,95 @@ rule insert_size:
         "METRIC_ACCUMULATION_LEVEL=SAMPLE"
     wrapper:
         f"{git}/bio/picard/collectinsertsizemetrics"
+
+
+rule cat_alignment_summary_metrix:
+    input:
+        "picard/collectalignmentsummarymetrics/{sample}.summary.txt"
+    output:
+        temp("picard/collectalignmentsummarymetrics/{sample}.processed.tsv")
+    message:
+        "Processing alignment summary for {wildcards.sample}"
+    threads:
+        1
+    resources:
+        time_min = 10,
+        mem_mb = 512
+    conda:
+        "../envs/pandas.yaml"
+    log:
+        "logs/pandas/collectalignmentsummarymetrics/format_{sample}.log"
+    script:
+        "../scripts/picard_summary_to_tsv.py"
+
+
+rule read_alignment_summary_metrix:
+    input:
+        expand(
+            "picard/collectalignmentsummarymetrics/{sample}.processed.tsv",
+            sample=design.Sample_id
+        )
+    output:
+        temp("stats/collectalignmentsummarymetrics/complete.tsv")
+    message:
+        "Collecting all summaries"
+    threads:
+        1
+    resources:
+        time_min = 10,
+        mem_mb = 512
+    conda:
+        "../envs/bash.yaml"
+    log:
+        "logs/pandas/collectalignmentsummarymetrics/cat.log"
+    shell:
+        ' echo -e '
+        '"Sample_id\tUpstream_reads\tDownstream_reads\tLibrary" '
+        ' > {output} 2> {log} && '
+        ' cat {input} >> {output} 2>> {log} '
+
+
+rule cat_picard_insert_size_metrics:
+    input:
+        "picard/collectinsertsizemetrics/{sample}.isize.txt"
+    output:
+        temp("picard/collectinsertsizemetrics/{sample}.isize.tsv")
+    message:
+        "Processing insert sizes for {wildcards.sample}"
+    threads:
+        1
+    resources:
+        time_min = 10,
+        mem_mb = 512
+    conda:
+        "../envs/pandas.yaml"
+    log:
+        "logs/pandas/collectinsertsizemetrics/format_{sample}.log"
+    script:
+        "../scripts/picard_insert_size_to_tsv.py"
+
+
+rule read_picard_insert_size_metrics:
+    input:
+        expand(
+            "picard/collectinsertsizemetrics/{sample}.isize.tsv",
+            sample=design.Sample_id
+        )
+    output:
+        temp("stats/collectinsertsizemetrics/complete.isize.tsv")
+    message:
+        "Gathering all insert sizes"
+    threads:
+        1
+    resources:
+        time_min = 10,
+        mem_mb = 512
+    conda:
+        "../envs/pandas.yaml"
+    log:
+        "logs/pandas/collectinsertsizemetrics/cat.log"
+    shell:
+        ' echo -e '
+        ' "Sample_id\tMean_insert_size\tStd_insert_size\tOrientation" '
+        ' > {output} 2> {log} && '
+        ' cat {input} >> {output} 2>> {log} '

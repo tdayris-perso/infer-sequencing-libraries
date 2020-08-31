@@ -8,3 +8,8 @@ logs/
 star/
 genomes/
 Log.out
+picard/
+read_length/
+read_number/
+read_quality/
+seqt/
