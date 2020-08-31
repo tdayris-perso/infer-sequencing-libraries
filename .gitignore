@@ -13,3 +13,5 @@ read_length/
 read_number/
 read_quality/
 seqt/
+design.tsv
+config.yaml
