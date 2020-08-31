@@ -1,7 +1,8 @@
 rule star_index:
     input:
-        fasta = config["ref"]["fasta"],
-        gtf = config["ref"]["gtf"]
+        fasta = get_fasta_path(),
+        gtf = get_gtf_path(),
+        index = get_index_path()
     output:
         directory("star/index/idx")
     message:
@@ -33,6 +34,8 @@ rule star_mapping:
         temp("star/bam/{sample}/Aligned.sortedByCoord.out.bam")
     message:
         "Mapping {wildcards.sample} with STAR"
+    wildcard_constraints:
+        sample = "|".join(design.Sample_id)
     threads:
         10
     resources:
@@ -88,7 +91,7 @@ rule star_rename:
         "cp {params} {input} {output} > {log} 2>&1"
 
 
-rule samtools_index:
+rule samtools_bam_index:
     input:
         "star/bam/{sample}.bam"
     output:

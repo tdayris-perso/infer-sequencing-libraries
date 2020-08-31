@@ -5,3 +5,6 @@ __pycache__/
 library/
 stats/
 logs/
+star/
+genomes/
+Log.out

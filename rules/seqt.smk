@@ -17,4 +17,5 @@ rule subset_reads:
     log:
         "logs/seqt/{sample}.log"
     wrapper:
-        f"{git}/seqtk/subsample/pe" if is_paired() else f"{git}/seqtk/subsample/se"
+        (f"{git}/bio/seqtk/subsample/pe"
+         if is_paired else f"{git}/bio/seqtk/subsample/se")

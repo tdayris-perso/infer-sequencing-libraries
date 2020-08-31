@@ -10,9 +10,12 @@ container: "docker://continuumio/miniconda3:5.0.1"
 include: "rules/common.smk"
 include: "rules/copy.smk"
 include: "rules/fastq.smk"
+include: "rules/picard.smk"
+include: "rules/seqt.smk"
+include: "rules/star.smk"
 
 rule all:
     input:
-        **get_targets(get_manuals=True)
+        **get_targets(get_manuals=True, get_bam=True)
     message:
         "Finishing pipeline"

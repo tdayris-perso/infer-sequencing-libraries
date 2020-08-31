@@ -56,7 +56,6 @@ else:
     )
     for sample_id, up, down in zip_fq:
         fq_link_dict[f"{sample_id}"] = up
-print(fq_link_dict)
 
 
 def get_samples_w(wildcards: Any) -> List[str]:
@@ -134,7 +133,8 @@ def get_gtf_path() -> str:
     return f"genomes/{base}"
 
 
-def get_targets(get_manuals: bool = False) -> Dict[str, str]:
+def get_targets(get_manuals: bool = False,
+                get_bam: bool = False) -> Dict[str, str]:
     """
     Return all needed output files
     """
@@ -142,5 +142,12 @@ def get_targets(get_manuals: bool = False) -> Dict[str, str]:
 
     if get_manuals is True:
         targets["manuals"] = "stats/manual/complete.txt"
+
+
+    if get_bam is True:
+        targets["bam"] = expand(
+            "star/bam/{sample}.bam",
+            sample = design.Sample_id
+        )
 
     return targets

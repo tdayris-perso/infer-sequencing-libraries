@@ -8,7 +8,7 @@ rule create_dict:
     params:
         extra=""  # optional: extra arguments for picard.
     wrapper:
-        f"{git}/picard/createsequencedictionary"
+        f"{git}/bio/picard/createsequencedictionary"
 
 
 rule samtools_index:
@@ -19,7 +19,7 @@ rule samtools_index:
     params:
         "" # optional params string
     wrapper:
-        f"{git}/samtools/faidx"
+        f"{git}/bio/samtools/faidx"
 
 
 rule alignment_summary:
@@ -37,7 +37,7 @@ rule alignment_summary:
         "METRIC_ACCUMULATION_LEVEL=null "
         "METRIC_ACCUMULATION_LEVEL=SAMPLE"
     wrapper:
-        f"{git}/picard/collectalignmentsummarymetrics"
+        f"{git}/bio/picard/collectalignmentsummarymetrics"
 
 
 rule insert_size:
@@ -53,4 +53,4 @@ rule insert_size:
         "METRIC_ACCUMULATION_LEVEL=null "
         "METRIC_ACCUMULATION_LEVEL=SAMPLE"
     wrapper:
-        f"{git}/picard/collectinsertsizemetrics"
+        f"{git}/bio/picard/collectinsertsizemetrics"
