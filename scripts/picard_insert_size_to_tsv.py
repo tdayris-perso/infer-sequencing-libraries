@@ -8,6 +8,11 @@ information
 """
 
 import pandas
+import logging
+
+logging.basicConfig(
+    filename=snakemake.log[0], filemode="w", level=logging.DEBUG
+)
 
 data = pandas.read_csv(
     snakemake.input[0],
@@ -19,6 +24,7 @@ data = pandas.read_csv(
     dtype=str
 )
 data = data.loc[0]
+logging.debug(data.head())
 
 headers = "\t".join(
     ["Sample_id", "Mean_insert_size", "Std_insert_size", "Orientation"]
@@ -29,5 +35,7 @@ results = "\t".join([
     data["STANDARD_DEVIATION"],
     data["PAIR_ORIENTATION"]
 ])
+logging.debug(results)
 with open(snakemake.output[0], "w") as outfile:
     outfile.write(f"{results}\n")
+    logging.debug("Process successful")

@@ -8,6 +8,11 @@ information
 """
 
 import pandas
+import logging
+
+logging.basicConfig(
+    filename=snakemake.log[0], filemode="w", level=logging.DEBUG
+)
 
 data = pandas.read_csv(
     snakemake.input[0],
@@ -17,6 +22,7 @@ data = pandas.read_csv(
     skip_blank_lines=True,
     comment="#"
 )
+logging.debug(data.head())
 
 
 # Guessing library
@@ -40,5 +46,7 @@ results = "\t".join([
     str(total_sr),
     library
 ])
+logging.head(results)
 with open(snakemake.output[0], "w") as outfile:
     outfile.write(f"{results}\n")
+    logging.debug("Process over.")
