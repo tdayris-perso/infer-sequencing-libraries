@@ -17,3 +17,5 @@ design.tsv
 config.yaml
 *.html
 example.png
+log/
+rseqc/
