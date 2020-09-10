@@ -10,8 +10,8 @@ import pandas  # Handle tables and merge
 import logging  # Traces and loggings
 
 logging.basicConfig(
-        filename=snakemake.log[0], filemode="w", level=logging.DEBUG
-    )
+    filename=snakemake.log[0], filemode="w", level=logging.DEBUG
+)
 
 data = None
 for table in snakemake.input:

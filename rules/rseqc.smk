@@ -7,6 +7,8 @@ rule rcqc_infer_experiment:
         "rseqc/infer_experiment/{sample}.txt"
     message:
         "Gathering experiment inference from RSeQC on {wildcards.sample}"
+    group:
+        "RSeQC"
     threads:
         1
     resources:
@@ -22,3 +24,48 @@ rule rcqc_infer_experiment:
         " -i {input.bam} "
         " > {output} "
         " 2> {log} "
+
+
+rule rseqc_format_result:
+    input:
+        "rseqc/infer_experiment/{sample}.txt"
+    output:
+        "rseqc/infer_experiment/{sample}.tsv"
+    message:
+        "Formatting rseqc output"
+    group:
+        "RSeQC"
+    threads:
+        1
+    resources:
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 128,
+        time_min = lambda wildcards, attempt: attempt * 15
+    conda:
+        "../envs/pandas.yaml"
+    log:
+        "logs/rseqc/format/{sample}.log"
+    script:
+        "../scripts/rseqc_to_tsv.py"
+
+
+rule rseqc_merge_results:
+    input:
+        expand(
+            "rseqc/infer_experiment/{sample}.tsv",
+            sample=design.Sample_id
+        )
+    output:
+        "rseqc/merged.tsv"
+    message:
+        "Concatenating all rseqc results"
+    threads:
+        1
+    resources:
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 128,
+        time_min = lambda wildcards, attempt: attempt * 15
+    conda:
+        "../envs/bash.yaml"
+    log:
+        "log/rseqc/merge.log"
+    shell:
+        "for i in {input}; do sed '1d' {input}; done > {output} 2> {log}"

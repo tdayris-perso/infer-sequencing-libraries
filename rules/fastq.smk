@@ -145,7 +145,7 @@ rule merge_all_metrics:
         "stats/manual/complete.txt",
         "stats/manual/qualities.tsv",
         "stats/collectinsertsizemetrics/complete.isize.tsv",
-        "stats/collectalignmentsummarymetrics/complete.tsv"
+        "rseqc/merged.tsv"
     output:
         "stats/global.tsv"
     message:
