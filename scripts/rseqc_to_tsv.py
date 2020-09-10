@@ -16,6 +16,7 @@ titles = "\t".join([
     "Undetermined_Fraction",
     "FR_Fraction",
     "RF_Fraction",
+    "Protocol"
 ])
 
 with open(snakemake.input[0]) as rseqc:
@@ -26,7 +27,17 @@ with open(snakemake.input[0]) as rseqc:
     ]
 logging.debug(f"{snakemake.wildcards.sample} processed")
 
-content = "\t".join([snakemake.wildcards.sample] + fractions)
+
+orientation = None
+
+if all(0.40 < frac < 0.60 for frac in map(float, fractions[-2:])):
+    orientation = "Unstranded"
+elif all(0.10 < frac < 0.90 for frac in map(float, fractions[-2:])):
+    orientation = "Stranded"
+else:
+    orientation = "Unknown"
+
+content = "\t".join([snakemake.wildcards.sample] + fractions + [orientation])
 
 with open(snakemake.output[0], 'w') as outtsv:
     outtsv.write("\n".join([titles, content]))

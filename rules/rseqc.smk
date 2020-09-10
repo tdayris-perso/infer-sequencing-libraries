@@ -68,4 +68,7 @@ rule rseqc_merge_results:
     log:
         "log/rseqc/merge.log"
     shell:
-        "for i in {input}; do sed '1d' {input}; done > {output} 2> {log}"
+        "head -n1 {input[0]} > {output} 2> {log} && "
+        "for FILE in {input}; "
+        "do sed '1d' ${{FILE}}; echo ''; "
+        "done >> {output} 2>> {log}"
