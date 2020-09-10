@@ -13,9 +13,10 @@ include: "rules/fastq.smk"
 include: "rules/picard.smk"
 include: "rules/seqt.smk"
 include: "rules/star.smk"
+include: "rules/rseqc.smk"
 
 rule all:
     input:
-        **get_targets(get_manuals=True, get_stats=True)
+        **get_targets(get_manuals=True, get_stats=True, get_rcqc=True)
     message:
         "Finishing pipeline"
