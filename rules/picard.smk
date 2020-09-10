@@ -7,6 +7,11 @@ rule create_dict:
         "logs/picard/create_dict.log"
     params:
         extra=""  # optional: extra arguments for picard.
+    threads:
+        1
+    resources:
+        time_min = 30,
+        mem_mb = 512
     wrapper:
         f"{git}/bio/picard/createsequencedictionary"
 
@@ -18,6 +23,11 @@ rule samtools_index:
         get_index_path()
     params:
         "" # optional params string
+    threads:
+        1
+    resources:
+        time_min = 30,
+        mem_mb = 512
     wrapper:
         f"{git}/bio/samtools/faidx"
 
@@ -32,6 +42,11 @@ rule alignment_summary:
         "picard/collectalignmentsummarymetrics/{sample}.summary.txt"
     log:
         "logs/picard/alignment-summary/{sample}.log"
+    threads:
+        1
+    resources:
+        time_min = lambda wildcards, attempt: min(attempt * 30, 90),
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 1024
     params:
         "VALIDATION_STRINGENCY=LENIENT "
         "METRIC_ACCUMULATION_LEVEL=null "
@@ -52,6 +67,11 @@ rule insert_size:
         "VALIDATION_STRINGENCY=LENIENT "
         "METRIC_ACCUMULATION_LEVEL=null "
         "METRIC_ACCUMULATION_LEVEL=SAMPLE"
+    threads:
+        1
+    resources:
+        time_min = lambda wildcards, attempt: min(attempt * 30, 90),
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 1024
     wrapper:
         f"{git}/bio/picard/collectinsertsizemetrics"
 
@@ -66,8 +86,8 @@ rule cat_alignment_summary_metrix:
     threads:
         1
     resources:
-        time_min = 10,
-        mem_mb = 512
+        time_min = lambda wildcards, attempt: min(attempt * 30, 90),
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 1024
     conda:
         "../envs/pandas.yaml"
     log:
@@ -89,8 +109,8 @@ rule read_alignment_summary_metrix:
     threads:
         1
     resources:
-        time_min = 10,
-        mem_mb = 512
+        time_min = lambda wildcards, attempt: min(attempt * 30, 90),
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 1024
     conda:
         "../envs/bash.yaml"
     log:
@@ -112,8 +132,8 @@ rule cat_picard_insert_size_metrics:
     threads:
         1
     resources:
-        time_min = 10,
-        mem_mb = 512
+        time_min = lambda wildcards, attempt: min(attempt * 30, 90),
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 1024
     conda:
         "../envs/pandas.yaml"
     log:
@@ -135,8 +155,8 @@ rule read_picard_insert_size_metrics:
     threads:
         1
     resources:
-        time_min = 10,
-        mem_mb = 512
+        time_min = lambda wildcards, attempt: min(attempt * 30, 90),
+        mem_mb = lambda wildcards, attempt: attempt * 2 * 1024
     conda:
         "../envs/pandas.yaml"
     log:

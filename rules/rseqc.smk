@@ -1,7 +1,7 @@
-rule infer_experiment:
+rule rcqc_infer_experiment:
     input:
-        bed = get_bed_genome_path()
-        bam = "star/bam/{sample}.bam"
+        bed = get_bed_genome_path(),
+        bam = "star/bam/{sample}.bam",
         bam_index = "star/bam/{sample}.bam.bai"
     output:
         "rseqc/infer_experiment/{sample}.txt"
@@ -14,6 +14,8 @@ rule infer_experiment:
         time_min = lambda wildcards, attempt: attempt * 15
     log:
         "logs/rseqc/infer_experiment/{sample}.log"
+    conda:
+        "../envs/rseqc.yaml"
     shell:
         " infer_experiment.py "
         " -r {input.bed} "

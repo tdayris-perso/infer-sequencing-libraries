@@ -8,7 +8,9 @@ rule star_index:
     message:
         "Indexing idx with STAR"
     threads:
-        10
+        20
+    priority:
+        50
     resources:
         mem_mb = (
             lambda wildcards, attempt: min(35840 + 10240 * attempt, 51200)

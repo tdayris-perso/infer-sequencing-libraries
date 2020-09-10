@@ -14,6 +14,8 @@ rule read_length:
         mem_mb = lambda wildcards, attempt: 256
     log:
         "logs/read/length/{sample}.log"
+    conda:
+        "../envs/pandas.yaml"
     script:
         "../scripts/read_length.py"
 
@@ -34,6 +36,8 @@ rule read_quality:
         mem_mb = lambda wildcards, attempt: 256
     log:
         "logs/read/quality/{sample}.log"
+    conda:
+        "../envs/pandas.yaml"
     script:
         "../scripts/read_quality.py"
 
@@ -54,6 +58,8 @@ rule read_number:
         mem_mb = 128
     log:
         "logs/read/number/{sample}.log"
+    conda:
+        "../envs/bash.yaml"
     shell:
         "(gunzip -c {input[0]} | "
         " awk 'END {{ print NR/4 }}') > {output} 2> {log}"
@@ -79,6 +85,8 @@ rule paste_read_information:
         mem_mb = 128
     log:
         "logs/read/sats/{sample}.log"
+    conda:
+        "../envs/bash.yaml"
     shell:
         "paste {input} > {output} 2> {log}"
 
@@ -100,6 +108,8 @@ rule cat_read_information:
         mem_mb = lambda wildcards, attempt: 256
     log:
         "logs/read/complete.log"
+    conda:
+        "../envs/bash.yaml"
     shell:
         '(echo -e "Sample_id\tMeanLength\tStdLength\tReadNumber" &&  '
         'cat {input}) > {output} 2> {log}'
@@ -122,6 +132,8 @@ rule cat_read_qualities:
         mem_mb = lambda wildcards, attempt: 256
     log:
         "logs/read/qualities_complete.log"
+    conda:
+        "../envs/bash.yaml"
     shell:
         '(echo -e "Sample_id\tMeanQuality\tStdQuality" &&  '
         'cat {input}) > {output} 2> {log}'

@@ -135,7 +135,8 @@ def get_gtf_path() -> str:
 
 def get_targets(get_manuals: bool = False,
                 get_bam: bool = False,
-                get_stats: bool = False) -> Dict[str, str]:
+                get_stats: bool = False,
+                get_rcqc: bool = False) -> Dict[str, str]:
     """
     Return all needed output files
     """
@@ -153,5 +154,11 @@ def get_targets(get_manuals: bool = False,
 
     if get_stats is True:
         targets["stats"] = "stats/global.tsv"
+
+    if get_rcqc is True:
+        targets["rseqc"] = expand(
+            "rseqc/infer_experiment/{sample}.txt",
+            sample = design.Sample_id
+        )
 
     return targets
