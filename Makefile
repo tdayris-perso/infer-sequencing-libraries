@@ -45,6 +45,11 @@ conda-tests:
 	${CONDA} activate ${ENV_NAME}
 .PHONY: conda-tests
 
+install:
+	${CONDA_ACTIVATE} base && \
+	${CONDA} env create --file ${ENV_YAML}
+.PHONY: install
+
 
 test-conda-report.html:
 	${CONDA_ACTIVATE} ${ENV_NAME} && \
